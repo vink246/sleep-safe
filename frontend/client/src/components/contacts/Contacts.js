@@ -14,7 +14,7 @@ const Contacts = () => {
   }, []);
 
   if(contacts.length === 0 && !loading) {
-    return <h4>You don't have any diagnosis yet</h4>
+    return <h4>You don't have any sleep data yet</h4>
   }
 
   return (

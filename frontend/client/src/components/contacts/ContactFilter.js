@@ -25,7 +25,7 @@ const ContactFilter = () => {
 
   return (
     <form>
-      <input ref={text} type="text" placeholder='Filter Diagnoses...' onChange={onChange}/>
+      <input ref={text} type="text" placeholder='Search Sleep Data' onChange={onChange}/>
     </form>
   );
 };

@@ -52,7 +52,7 @@ const ContactForm = () => {
   return(
     <form onSubmit={onSubmit}>
       <h2 className="text-primary">{current ? 'Update data' : 'Add your own data'}</h2>
-      <input type="text" placeholder='Diagnosis' name='name' value={name} onChange={onChange} />
+      <input type="text" placeholder='Checkup Recommendation' name='name' value={name} onChange={onChange} />
       <input type="text" placeholder='Date' name='email' value={email} onChange={onChange} />
       <input type="text" placeholder='Image URL' name='phone' value={phone} onChange={onChange} />
       <div>

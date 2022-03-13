@@ -8,6 +8,7 @@ from IPython.display import Audio
 import torchvision.transforms as T
 from PIL import Image
 import numpy as np
+import pandas as pd
 
 # assign directory
 directory = 'D:\\Documents\\python projects\\sleepDiagnosis\\Respiratory_Sound_Database\\Respiratory_Sound_Database\\audio_and_txt_files'
@@ -65,23 +66,31 @@ def spectro_gram(aud, n_mels=64, n_fft=1024, hop_len=None):
     spec = transforms.AmplitudeToDB(top_db=top_db)(spec)
     return (spec)
 
-newLabels = np.empty((920,2))
-
+newLabels = pd.DataFrame(columns=['image_id','Diagnosis'])
+encode = {"Healthy":0,"Asthma":1,"COPD":2,"URTI":3,"LRTI":4,"Bronchiectasis":5,"Pneumonia":6,"Bronchiolitis":7}
+reference = pd.read_csv('D:\\Documents\\python projects\\sleepDiagnosis\\Respiratory_Sound_Database\\Respiratory_Sound_Database\\patient_diagnosis.csv')
+print(reference.head)
 # iterate over files in
 # that directory
+count = -1
 for filename in os.listdir(directory):
     f = os.path.join(directory, filename)
     # checking if it is a file
     if os.path.isfile(f):
         if f.endswith('.wav'):
+            count += 1
             print(f)
             aud = open(f)
             aud = pad_trunc(aud, 15000)
             sig, sr = aud
             print(sig, sr)
             spec = spectro_gram(aud)
-            print(spec)
-            print(spec.shape)
+            spec = torch.repeat_interleave(spec,3,dim=-3)
             transform = T.ToPILImage()
             img = transform(spec)
             img = img.resize((118,64), resample=0)
+            id = filename[:3]
+            newLabels.loc[count] = [str(count)+'.jpg',encode[reference.query('ID=={}'.format(id))['Diagnosis'].iloc[0]]]
+            img.save('D:\\Documents\\python projects\\sleepDiagnosis\\Respiratory_Sound_Database\\Respiratory_Sound_Database\\spectograms\\{}.jpg'.format(count))
+
+newLabels.to_csv('D:\\Documents\\python projects\\sleepDiagnosis\\Respiratory_Sound_Database\\Respiratory_Sound_Database\\train.csv',index=False)
